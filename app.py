@@ -46,5 +46,7 @@ def process_sale(item_id, quantity_sold):
 
 if __name__ == "__main__":
     print("--- Running Tech-Tasty Automation Engine ---")
-    process_sale("103", 2)
-
+    user_item = input("Enter Item ID: ")
+    user_qty_string = input("Enter quantity sold: ")
+    user_qty_integer = int(user_qty_string)
+    process_sale(user_item, user_qty_integer)
