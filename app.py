@@ -1,24 +1,33 @@
 import sys
 from datetime import datetime
 
-def get_memory_status():
-    # Simulated memory status for local dev
-    return "RAM Usage: 42% (OK)"
+class SystemMonitor:
+    def __init__(self, log_file="system_health.log"):
+        self.log_file = log_file
 
-def check_system():
-    try:
-        mem_info = get_memory_status()
-        status_msg = f"STATUS: OK | Python: {sys.version.split()[0]} | {mem_info}"
+    def get_memory_status(self):
+        # Simulated RAM metric for local environment
+        return "RAM Usage: 42% (OK)"
+
+    def format_status_message(self):
+        version = sys.version.split()[0]
+        memory = self.get_memory_status()
+        return f"STATUS: OK | Python: {version} | {memory}"
+
+    def log_status(self):
+        try_msg = self.format_status_message()
+        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        log_entry = f"[{timestamp}] {try_msg}\n"
         
-        print("========================================")
-        print(f"   {status_msg}")
-        print("========================================")
-        
-        with open("system_health.log", "a") as f:
-            f.write(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] {status_msg}\n")
-            
+        with open(self.log_file, "a") as f:
+            f.write(log_entry)
+        return try_msg
     except Exception as e:
-        print(f"[ERROR] Failed to execute system check: {e}")
+        print(f"[ERROR] Failed to log status: {e}")
+        return None
 
 if __name__ == "__main__":
-    check_system()
+    monitor = SystemMonitor()
+    print("========================================")
+    print(f"   {monitor.log_status()}")
+    print("========================================")
