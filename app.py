@@ -15,16 +15,17 @@ class SystemMonitor:
         return f"STATUS: OK | Python: {version} | {memory}"
 
     def log_status(self):
-        try_msg = self.format_status_message()
-        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        log_entry = f"[{timestamp}] {try_msg}\n"
-        
-        with open(self.log_file, "a") as f:
-            f.write(log_entry)
-        return try_msg
-    except Exception as e:
-        print(f"[ERROR] Failed to log status: {e}")
-        return None
+        try:
+            try_msg = self.format_status_message()
+            timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            log_entry = f"[{timestamp}] {try_msg}\n"
+            
+            with open(self.log_file, "a") as f:
+                f.write(log_entry)
+            return try_msg
+        except Exception as e:
+            print(f"[ERROR] Failed to log status: {e}")
+            return None
 
 if __name__ == "__main__":
     monitor = SystemMonitor()
