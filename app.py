@@ -1,12 +1,13 @@
+import os
 import sys
 from datetime import datetime
 
 class SystemMonitor:
-    def __init__(self, log_file="system_health.log"):
-        self.log_file = log_file
+    def __init__(self, log_file=None):
+        # Read from argument, then environment variable, then fallback to default
+        self.log_file = log_file or os.getenv("LOG_FILE_PATH", "system_health.log")
 
     def get_memory_status(self):
-        # Simulated RAM metric for local environment
         return "RAM Usage: 42% (OK)"
 
     def format_status_message(self):
@@ -30,5 +31,6 @@ class SystemMonitor:
 if __name__ == "__main__":
     monitor = SystemMonitor()
     print("========================================")
+    print(f"   Target Log: {monitor.log_file}")
     print(f"   {monitor.log_status()}")
     print("========================================")
