@@ -1,0 +1,29 @@
+import sys
+import argparse
+import sys_checker
+import parrot_banner
+
+def main():
+    parser = argparse.ArgumentParser(description="SecDevOps Mobile Toolset CLI")
+    parser.add_argument("--diag", action="store_true", help="Run system diagnostics & payload hash check")
+    parser.add_argument("--scan", type=str, metavar="HOST", help="Run multi-port scan on target host")
+    parser.add_argument("--banner", nargs=2, metavar=("HOST", "PORT"), help="Grab service banner (e.g. --banner 127.0.0.1 8080)")
+
+    args = parser.parse_args()
+
+    if args.diag:
+        print("=== Running Diagnostics ===")
+        sys_checker.run_diagnostics()
+        sys_checker.check_file_integrity("payload.txt")
+    elif args.scan:
+        print(f"=== Port Scan: {args.scan} ===")
+        sys_checker.scan_ports(args.scan, [21, 22, 80, 443, 8080])
+    elif args.banner:
+        host, port = args.banner[0], int(args.banner[1])
+        print(f"=== Banner Grab: {host}:{port} ===")
+        parrot_banner.grab_banner(host, port)
+    else:
+        parser.print_help()
+
+if __name__ == "__main__":
+    main()
