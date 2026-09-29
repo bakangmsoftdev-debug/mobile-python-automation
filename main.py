@@ -2,13 +2,15 @@ import argparse
 import sys_checker
 import parrot_banner
 import parrot_dirscan
+import log_analyzer
 
 def main():
     parser = argparse.ArgumentParser(description="SecDevOps Mobile Toolset CLI")
     parser.add_argument("--diag", action="store_true", help="Run system diagnostics & payload hash check")
     parser.add_argument("--scan", type=str, metavar="HOST", help="Run multi-port scan on target host")
     parser.add_argument("--banner", nargs=2, metavar=("HOST", "PORT"), help="Grab service banner (e.g. --banner 127.0.0.1 8080)")
-    parser.add_argument("--dirscan", type=str, metavar="URL", help="Run directory enumeration on target URL (e.g. http://127.0.0.1:8080)")
+    parser.add_argument("--dirscan", type=str, metavar="URL", help="Run directory enumeration on target URL")
+    parser.add_argument("--log", type=str, metavar="FILE", help="Analyze web server log file for security probes")
 
     args = parser.parse_args()
 
@@ -27,6 +29,9 @@ def main():
         print(f"=== Directory Recon: {args.dirscan} ===")
         wordlist = ["admin", "login", "payload.txt", "secret", "config"]
         parrot_dirscan.check_endpoints(args.dirscan, wordlist)
+    elif args.log:
+        print(f"=== Log Security Analysis ===")
+        log_analyzer.parse_log(args.log)
     else:
         parser.print_help()
 
