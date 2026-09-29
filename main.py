@@ -5,6 +5,7 @@ import parrot_dirscan
 import log_analyzer
 import async_scanner
 import vuln_reporter
+import audit_orchestrator
 
 def main():
     parser = argparse.ArgumentParser(description="SecDevOps Mobile Toolset CLI")
@@ -15,6 +16,7 @@ def main():
     parser.add_argument("--dirscan", type=str, metavar="URL", help="Run directory enumeration on target URL")
     parser.add_argument("--log", type=str, metavar="FILE", help="Analyze web server log file for security probes")
     parser.add_argument("--report", type=str, metavar="HOST", help="Generate vulnerability JSON report for target")
+    parser.add_argument("--full-audit", nargs=2, metavar=("HOST", "URL"), help="Run end-to-end automated security audit (e.g. --full-audit 127.0.0.1 http://127.0.0.1:8080)")
 
     args = parser.parse_args()
 
@@ -43,6 +45,9 @@ def main():
     elif args.report:
         print(f"=== Generating Assessment Report ===")
         vuln_reporter.analyze_vulnerabilities(args.report, [21, 80, 8080], banner_info="Python/3.13.5")
+    elif args.full_audit:
+        host, url = args.full_audit[0], args.full_audit[1]
+        audit_orchestrator.run_full_audit(host, url, "server.log")
     else:
         parser.print_help()
 

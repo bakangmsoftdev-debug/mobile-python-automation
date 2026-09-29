@@ -2,32 +2,32 @@ import asyncio
 import socket
 import time
 
-async def check_port(host, port, timeout=1.0):
+async def check_port(host, port, open_ports):
+    conn = asyncio.open_connection(host, port)
     try:
-        conn = asyncio.open_connection(host, port)
-        reader, writer = await asyncio.wait_for(conn, timeout=timeout)
-        print(f"    [+] Port {port:<5} OPEN")
+        reader, writer = await asyncio.wait_for(conn, timeout=1.0)
+        open_ports.append(port)
+        print(f"  [+] Port {port} OPEN")
         writer.close()
         await writer.wait_closed()
-        return port, True
     except (asyncio.TimeoutError, ConnectionRefusedError, OSError):
-        return port, False
+        pass
 
-async def scan_range(host, ports):
+async def scan_ports_async(host, ports):
     print(f"[*] Starting Async Scan on target: {host}")
     start_time = time.time()
+    open_ports = []
     
-    tasks = [check_port(host, port) for port in ports]
-    results = await asyncio.gather(*tasks)
+    tasks = [check_port(host, port, open_ports) for port in ports]
+    await asyncio.gather(*tasks)
     
     elapsed = time.time() - start_time
-    open_ports = [port for port, is_open in results if is_open]
     print(f"[+] Scan completed in {elapsed:.3f} seconds.")
-    print(f"[+] Open Ports Found: {open_ports if open_ports else 'None'}")
+    print(f"[+] Open Ports Found: {open_ports}")
+    return sorted(open_ports)
 
 def run_async_scan(host, ports):
-    asyncio.run(scan_range(host, ports))
+    return asyncio.run(scan_ports_async(host, ports))
 
 if __name__ == "__main__":
-    target_ports = [21, 22, 80, 443, 8080, 8443, 9000, 9999]
-    run_async_scan("127.0.0.1", target_ports)
+    run_async_scan("127.0.0.1", [21, 22, 80, 443, 8080])
