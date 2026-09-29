@@ -6,17 +6,19 @@ import log_analyzer
 import async_scanner
 import vuln_reporter
 import audit_orchestrator
+import test_runner
 
 def main():
     parser = argparse.ArgumentParser(description="SecDevOps Mobile Toolset CLI")
     parser.add_argument("--diag", action="store_true", help="Run system diagnostics & payload hash check")
     parser.add_argument("--scan", type=str, metavar="HOST", help="Run sequential multi-port scan on target host")
     parser.add_argument("--async-scan", type=str, metavar="HOST", help="Run high-speed asynchronous port scan")
-    parser.add_argument("--banner", nargs=2, metavar=("HOST", "PORT"), help="Grab service banner (e.g. --banner 127.0.0.1 8080)")
-    parser.add_argument("--dirscan", type=str, metavar="URL", help="Run directory enumeration on target URL")
-    parser.add_argument("--log", type=str, metavar="FILE", help="Analyze web server log file for security probes")
-    parser.add_argument("--report", type=str, metavar="HOST", help="Generate vulnerability JSON report for target")
-    parser.add_argument("--full-audit", nargs=2, metavar=("HOST", "URL"), help="Run end-to-end automated security audit (e.g. --full-audit 127.0.0.1 http://127.0.0.1:8080)")
+    parser.add_argument("--banner", nargs=2, metavar=("HOST", "PORT"), help="Grab service banner")
+    parser.add_argument("--dirscan", type=str, metavar="URL", help="Run directory enumeration")
+    parser.add_argument("--log", type=str, metavar="FILE", help="Analyze web server log file")
+    parser.add_argument("--report", type=str, metavar="HOST", help="Generate vulnerability report")
+    parser.add_argument("--full-audit", nargs=2, metavar=("HOST", "URL"), help="Run end-to-end automated security audit")
+    parser.add_argument("--test", action="store_true", help="Execute CI/CD automated test suite")
 
     args = parser.parse_args()
 
@@ -48,6 +50,8 @@ def main():
     elif args.full_audit:
         host, url = args.full_audit[0], args.full_audit[1]
         audit_orchestrator.run_full_audit(host, url, "server.log")
+    elif args.test:
+        test_runner.run_pipeline_tests()
     else:
         parser.print_help()
 
