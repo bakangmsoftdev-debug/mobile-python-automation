@@ -3,11 +3,13 @@ import sys_checker
 import parrot_banner
 import parrot_dirscan
 import log_analyzer
+import async_scanner
 
 def main():
     parser = argparse.ArgumentParser(description="SecDevOps Mobile Toolset CLI")
     parser.add_argument("--diag", action="store_true", help="Run system diagnostics & payload hash check")
-    parser.add_argument("--scan", type=str, metavar="HOST", help="Run multi-port scan on target host")
+    parser.add_argument("--scan", type=str, metavar="HOST", help="Run sequential multi-port scan on target host")
+    parser.add_argument("--async-scan", type=str, metavar="HOST", help="Run high-speed asynchronous port scan")
     parser.add_argument("--banner", nargs=2, metavar=("HOST", "PORT"), help="Grab service banner (e.g. --banner 127.0.0.1 8080)")
     parser.add_argument("--dirscan", type=str, metavar="URL", help="Run directory enumeration on target URL")
     parser.add_argument("--log", type=str, metavar="FILE", help="Analyze web server log file for security probes")
@@ -21,6 +23,10 @@ def main():
     elif args.scan:
         print(f"=== Port Scan: {args.scan} ===")
         sys_checker.scan_ports(args.scan, [21, 22, 80, 443, 8080])
+    elif args.async_scan:
+        print(f"=== Asynchronous Port Scan: {args.async_scan} ===")
+        target_ports = [21, 22, 80, 443, 8080, 8443, 9000, 9999]
+        async_scanner.run_async_scan(args.async_scan, target_ports)
     elif args.banner:
         host, port = args.banner[0], int(args.banner[1])
         print(f"=== Banner Grab: {host}:{port} ===")
