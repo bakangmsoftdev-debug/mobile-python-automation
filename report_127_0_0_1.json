@@ -1,0 +1,32 @@
+{
+    "timestamp": "2026-09-29T15:27:40.626501",
+    "target": "127.0.0.1",
+    "open_ports": [
+        21,
+        80,
+        8080
+    ],
+    "total_findings": 4,
+    "findings": [
+        {
+            "port": 21,
+            "severity": "HIGH",
+            "issue": "FTP Plaintext Authentication Enabled"
+        },
+        {
+            "port": 80,
+            "severity": "MEDIUM",
+            "issue": "Unencrypted HTTP Service Operational"
+        },
+        {
+            "port": 8080,
+            "severity": "LOW",
+            "issue": "Alternative HTTP Service Exposed"
+        },
+        {
+            "port": "HTTP",
+            "severity": "INFO",
+            "issue": "Python Development Server Detected in Production"
+        }
+    ]
+}

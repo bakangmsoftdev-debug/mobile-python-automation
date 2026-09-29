@@ -4,6 +4,7 @@ import parrot_banner
 import parrot_dirscan
 import log_analyzer
 import async_scanner
+import vuln_reporter
 
 def main():
     parser = argparse.ArgumentParser(description="SecDevOps Mobile Toolset CLI")
@@ -13,6 +14,7 @@ def main():
     parser.add_argument("--banner", nargs=2, metavar=("HOST", "PORT"), help="Grab service banner (e.g. --banner 127.0.0.1 8080)")
     parser.add_argument("--dirscan", type=str, metavar="URL", help="Run directory enumeration on target URL")
     parser.add_argument("--log", type=str, metavar="FILE", help="Analyze web server log file for security probes")
+    parser.add_argument("--report", type=str, metavar="HOST", help="Generate vulnerability JSON report for target")
 
     args = parser.parse_args()
 
@@ -38,6 +40,9 @@ def main():
     elif args.log:
         print(f"=== Log Security Analysis ===")
         log_analyzer.parse_log(args.log)
+    elif args.report:
+        print(f"=== Generating Assessment Report ===")
+        vuln_reporter.analyze_vulnerabilities(args.report, [21, 80, 8080], banner_info="Python/3.13.5")
     else:
         parser.print_help()
 
